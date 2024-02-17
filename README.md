@@ -1,6 +1,11 @@
 Ever wanted to limit how many db queries a certain function or view can make? 
 You're in luck!
 
+Get it from [PyPi](https://pypi.org/project/django-query-limiter/0.0.1/):
+```shell
+pip install django-query-limiter==0.0.1
+```
+
 Usage:
 ```python
 from your_django_models import Model
