@@ -5,6 +5,7 @@ from django.db import connections
 from .exceptions import QueryLimitExceeded
 
 DISABLED = False
+DEFAULT_DB_CONNECTIONS = None
 
 
 @dataclass
@@ -28,7 +29,11 @@ def limit_queries(limit: int, db_connections: list[str] | None = None):
         yield
         return
 
-    db_connections = [connections[connection_name] for connection_name in (db_connections or list(connections))]
+    db_connections = [
+        connections[connection_name]
+        for connection_name in (db_connections or DEFAULT_DB_CONNECTIONS or list(connections))
+    ]
+
     limiter = QueryLimiter(limit=limit)
 
     managers = [connection.execute_wrapper(limiter) for connection in db_connections]
@@ -42,3 +47,8 @@ def limit_queries(limit: int, db_connections: list[str] | None = None):
 def disable_query_limiter():
     global DISABLED
     DISABLED = True
+
+
+def set_default_db_connections(db_connections: list[str]):
+    global DEFAULT_DB_CONNECTIONS
+    DEFAULT_DB_CONNECTIONS = db_connections
