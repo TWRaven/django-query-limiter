@@ -2,14 +2,9 @@ from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from django.db import connections
 
+from .exceptions import QueryLimitExceeded
 
-class QueryLimitExceeded(Exception):
-    def __init__(self, limit: int, queries: list[str]):
-        self.queries = queries
-        self.limit = limit
-
-        formatted_queries = "\n".join(f"{i}: {query}" for i, query in enumerate(queries))
-        super().__init__(f"Query limit of {limit} exceeded.\nQueries:\n{formatted_queries}")
+DISABLED = False
 
 
 @dataclass
@@ -29,6 +24,10 @@ class QueryLimiter:
 
 @contextmanager
 def limit_queries(limit: int, db_connections: list[str] | None = None):
+    if DISABLED:
+        yield
+        return
+
     db_connections = [connections[connection_name] for connection_name in (db_connections or list(connections))]
     limiter = QueryLimiter(limit=limit)
 
@@ -38,3 +37,8 @@ def limit_queries(limit: int, db_connections: list[str] | None = None):
         for manager in managers:
             stack.enter_context(manager)
         yield
+
+
+def disable_query_limiter():
+    global DISABLED
+    DISABLED = True

@@ -23,3 +23,16 @@ from query_limiter import limit_queries
 def my_view(request):
     return Model.objects.first()
 ```
+
+You can globally disable the query limiter:
+```python
+from your_django_models import Model
+from query_limiter import limit_queries, disable_query_limiter
+
+if settings.ENVIROMENT == 'production':
+    disable_query_limiter()
+
+with limit_queries(1):
+    print(Model.objects.first())  # Prints your model's first object
+    print(Model.objects.first())  # Prints your model's first object
+```
