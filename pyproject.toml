@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-query-limiter"
-version = "0.1.1"
+version = "0.2.0"
 description = "Limit django query amounts in a certain scope"
 readme = "README.md"
 authors = [{ name = "Raven De Vooght" }]
@@ -13,8 +13,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["feed", "reader", "tutorial"]
+keywords = ["django", "query", "limit", "performance"]
 dependencies = ["django"]
+
+[project.optional-dependencies]
+formatting = ["sqlparse", "humanize"]
 
 [project.urls]
 Homepage = "https://github.com/TWRaven/django-query-limiter"
